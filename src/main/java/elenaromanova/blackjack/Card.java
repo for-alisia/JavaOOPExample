@@ -28,19 +28,9 @@ public class Card {
     public static void main(String[] args) {
         Card card1 = new Card(Suit.CLUBS, Rank.JACK);
         Card card2 = new Card(Suit.DIAMONDS, Rank.TEN);
-
-        // int total = card1.plus(card2);
-
-        // Hand hand = new Hand();
-        // hand.add(card1);
-        // hand.add(card2);
-        // int total = hand.getTotal();
     }
 
     public int getValue() {
-        return switch(this.rank) {
-            case JACK, QUEEN, KING -> 10;
-            default -> this.rank.ordinal() + 1;
-        };
+        return this.rank.getValue();
     }
 }
