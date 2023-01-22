@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Developer {
+    private final String ROLE = "Developer";
     private String lastName;
     private String firstName;
     private LocalDate dob;
@@ -57,6 +58,6 @@ public class Developer {
 
     @Override
     public String toString() {
-        return String.format("%s, %s: %s", firstName, lastName, moneyFormat.format(getSalary()));
+        return String.format("%s, %s (%s): %s", firstName, lastName, ROLE, moneyFormat.format(getSalary()));
     }
 }

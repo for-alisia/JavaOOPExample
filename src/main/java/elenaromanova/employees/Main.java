@@ -22,57 +22,29 @@ public class Main {
         Pattern peoplePattern = Pattern.compile(peopleRegExp);
         Matcher peopleMatcher = peoplePattern.matcher(people);
 
-        String progRegExp = "locpd=(?<locpd>\\d+),yoe=(?<yoe>\\d+),iq=(?<iq>\\d+)";
-        Pattern coderPat = Pattern.compile(progRegExp);
-
-        String anRegExp = "projectCount=(?<projectCount>\\d+)";
-        Pattern anPat = Pattern.compile(anRegExp);
-
-        String managerRegExp = "orgSize=(?<orgSize>\\d+),dr=(?<dr>\\d+)";
-        Pattern managerPat = Pattern.compile(managerRegExp);
-
-
         int totalSalary = 0;
         while(peopleMatcher.find()) {
-            String details = peopleMatcher.group("details");
-            String firstName = peopleMatcher.group("firstName");
-            String lastName = peopleMatcher.group("lastName");
+            String row = peopleMatcher.group();
             int empSalary =  switch(peopleMatcher.group("role")) {
                 case "Manager" -> {
-                    int salary = 3000;
-                    Matcher manMat = managerPat.matcher(details);
-
-                    if (manMat.matches()) {
-                        int orgSize = Integer.parseInt(manMat.group("orgSize"));
-                        int dr = Integer.parseInt(manMat.group("dr"));
-
-                        salary += orgSize * dr;
-                    }
-
-                    yield salary;
+                    Manager manager = new Manager(row);
+                    System.out.println(manager.toString());
+                    yield manager.getSalary();
                 }
                 case "Analyst" -> {
-                    int salary = 2500;
-                    Matcher anMat = anPat.matcher(details);
-                    if (anMat.matches()) {
-                        int projectCount = Integer.parseInt(anMat.group("projectCount"));
-
-                        salary += projectCount * 100;
-                    }
-
-                    yield salary;
+                    Analyst analyst = new Analyst(row);
+                    System.out.println(analyst.toString());
+                    yield analyst.getSalary();
                 }
                 case "Developer" -> {
-                    Developer developer = new Developer(peopleMatcher.group());
+                    Developer developer = new Developer(row);
+                    System.out.println(developer.toString());
                     yield developer.getSalary();
                 }
-                default -> {
-                    yield 0;
-                }
+                default -> 0;
             };
 
             totalSalary += empSalary;
-            System.out.printf("%s, %s: %s%n", firstName, lastName, NumberFormat.getCurrencyInstance(Locale.US).format(empSalary));
         }
 
         NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.US);
