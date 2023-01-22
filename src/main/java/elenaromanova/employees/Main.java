@@ -14,9 +14,9 @@ public class Main {
                 John, Smith, 23/09/1999, Analyst, {projectCount=5}
                 William, Carter, 23/09/1999, Analyst, {projectCount=7}
                 Alex, Green, 23/09/1999, Analyst, {projectCount=10}
-                Max, Jonas, 16/11/1987, Developer, {locpd=2000,yoe=10,iq=140}
-                Lisa, Doll, 16/11/1987, Developer, {locpd=1300,yoe=3,iq=105}
-                Andrea, Black, 16/11/1987, Developer, {locpd=1600,yoe=7,iq=100}
+                Max, Jonas, 10/01/1987, Developer, {locpd=2000,yoe=10,iq=140}
+                Lisa, Doll, 22/02/1987, Developer, {locpd=1300,yoe=3,iq=105}
+                Andrea, Black, 30/03/1987, Developer, {locpd=1600,yoe=7,iq=100}
                 """;
         String peopleRegExp = "(?<firstName>\\w+),\\s*(?<lastName>\\w+),\\s*(?<birthdate>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
         Pattern peoplePattern = Pattern.compile(peopleRegExp);
@@ -63,17 +63,8 @@ public class Main {
                     yield salary;
                 }
                 case "Developer" -> {
-                    int salary = 2800;
-                    Matcher coderMat = coderPat.matcher(details);
-                    if (coderMat.matches()) {
-                        int locpd = Integer.parseInt(coderMat.group("locpd"));
-                        int yoe = Integer.parseInt(coderMat.group("yoe"));
-                        int iq = Integer.parseInt(coderMat.group("iq"));
-
-                        salary += locpd * yoe * iq;
-                    };
-
-                    yield salary;
+                    Developer developer = new Developer(peopleMatcher.group());
+                    yield developer.getSalary();
                 }
                 default -> {
                     yield 0;
