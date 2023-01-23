@@ -7,9 +7,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Employee {
-    protected final String ROLE = "Employee";
-    protected final int BASE_SALARY = 0;
+public class Employee implements IEmployee {
+    protected String role = "Employee";
     protected final NumberFormat moneyFormat = NumberFormat.getCurrencyInstance(Locale.US);
     private final String peopleRegExp = "(?<firstName>\\w+),\\s*(?<lastName>\\w+),\\s*(?<birthdate>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
     protected final Pattern peoplePattern = Pattern.compile(peopleRegExp);
@@ -19,9 +18,9 @@ public class Employee {
     protected LocalDate dob;
     protected DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    public Employee(String personText) {
+    public Employee(String personText, String role) {
         peopleMatcher = peoplePattern.matcher(personText);
-
+        this.role = role;
         if (peopleMatcher.matches()) {
             lastName = peopleMatcher.group("lastName");
             firstName = peopleMatcher.group("firstName");
@@ -30,12 +29,13 @@ public class Employee {
 
     }
 
+    @Override
     public int getSalary() {
         return 0;
     }
 
     @Override
     public String toString() {
-        return String.format("%s, %s (%s): %s", firstName, lastName, this.ROLE, moneyFormat.format(getSalary()));
+        return String.format("%s, %s (%s): %s", firstName, lastName, role, moneyFormat.format(getSalary()));
     }
 }

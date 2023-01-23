@@ -25,7 +25,7 @@ public class Main {
         int totalSalary = 0;
         while(peopleMatcher.find()) {
             String row = peopleMatcher.group();
-            Employee employee =  switch(peopleMatcher.group("role")) {
+            IEmployee employee =  switch(peopleMatcher.group("role")) {
                 case "Manager" -> new Manager(row);
                 case "Analyst" -> new Analyst(row);
                 case "Developer" -> new Developer(row);

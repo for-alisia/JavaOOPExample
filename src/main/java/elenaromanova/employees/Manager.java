@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Manager extends Employee {
-    private final String ROLE = "Manager";
     private int orgSize;
     private int directReport;
     private final int BASE_SALARY = 3000;
@@ -13,7 +12,7 @@ public class Manager extends Employee {
     private final String managerRegExp = "orgSize=(?<orgSize>\\d+),dr=(?<dr>\\d+)";
     private final Pattern managerPattern = Pattern.compile(managerRegExp);
     public Manager(String personText) {
-        super(personText);
+        super(personText, "Manager");
         Matcher managerMatcher = managerPattern.matcher(peopleMatcher.group("details"));
         if (managerMatcher.matches()) {
             orgSize = Integer.parseInt(managerMatcher.group("orgSize"));

@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Developer extends Employee {
-    private final String ROLE = "Developer";
     private final int BASE_SALARY = 2800;
     private int linesOfCode;
     private int yearsOfExperience;
@@ -16,7 +15,7 @@ public class Developer extends Employee {
     private final String devRegExp = "locpd=(?<locpd>\\d+),yoe=(?<yoe>\\d+),iq=(?<iq>\\d+)";
     private final Pattern devPattern = Pattern.compile(devRegExp);
     public Developer(String personText) {
-        super(personText);
+        super(personText, "Developer");
         Matcher devMatcher = devPattern.matcher(peopleMatcher.group("details"));
         if (devMatcher.matches()) {
             linesOfCode = Integer.parseInt(devMatcher.group("locpd"));
