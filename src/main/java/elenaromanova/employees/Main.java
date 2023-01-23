@@ -29,12 +29,10 @@ public class Main {
                 case "Manager" -> new Manager(row);
                 case "Analyst" -> new Analyst(row);
                 case "Developer" -> new Developer(row);
-                default -> null;
+                default -> new Employee(row);
             };
-            int salary = employee == null ? 0 : employee.getSalary();
-            if (employee != null) {
-                System.out.println(employee.toString());
-            }
+            int salary = employee.getSalary();
+            System.out.println(employee.toString());
             totalSalary += salary;
         }
 

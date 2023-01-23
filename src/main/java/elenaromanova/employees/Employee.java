@@ -12,21 +12,28 @@ public class Employee implements IEmployee {
     protected final NumberFormat moneyFormat = NumberFormat.getCurrencyInstance(Locale.US);
     private final String peopleRegExp = "(?<firstName>\\w+),\\s*(?<lastName>\\w+),\\s*(?<birthdate>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
     protected final Pattern peoplePattern = Pattern.compile(peopleRegExp);
-    protected final Matcher peopleMatcher;
+    protected Matcher peopleMatcher;
     protected String lastName;
     protected String firstName;
     protected LocalDate dob;
     protected DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public Employee(String personText, String role) {
-        peopleMatcher = peoplePattern.matcher(personText);
         this.role = role;
+        setAttributes(personText);
+    }
+
+    public Employee(String personText) {
+        setAttributes(personText);
+    }
+
+    private void setAttributes(String personText) {
+        peopleMatcher = peoplePattern.matcher(personText);
         if (peopleMatcher.matches()) {
             lastName = peopleMatcher.group("lastName");
             firstName = peopleMatcher.group("firstName");
             dob = LocalDate.from(dtFormatter.parse(peopleMatcher.group("birthdate")));
         }
-
     }
 
     @Override
