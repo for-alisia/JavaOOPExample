@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Analyst {
+public class Analyst implements Employee {
     private final String ROLE = "Analyst";
     private String lastName;
     private String firstName;

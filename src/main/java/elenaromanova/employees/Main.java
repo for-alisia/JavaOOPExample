@@ -25,26 +25,17 @@ public class Main {
         int totalSalary = 0;
         while(peopleMatcher.find()) {
             String row = peopleMatcher.group();
-            int empSalary =  switch(peopleMatcher.group("role")) {
-                case "Manager" -> {
-                    Manager manager = new Manager(row);
-                    System.out.println(manager.toString());
-                    yield manager.getSalary();
-                }
-                case "Analyst" -> {
-                    Analyst analyst = new Analyst(row);
-                    System.out.println(analyst.toString());
-                    yield analyst.getSalary();
-                }
-                case "Developer" -> {
-                    Developer developer = new Developer(row);
-                    System.out.println(developer.toString());
-                    yield developer.getSalary();
-                }
-                default -> 0;
+            Employee employee =  switch(peopleMatcher.group("role")) {
+                case "Manager" -> new Manager(row);
+                case "Analyst" -> new Analyst(row);
+                case "Developer" -> new Developer(row);
+                default -> null;
             };
-
-            totalSalary += empSalary;
+            int salary = employee == null ? 0 : employee.getSalary();
+            if (employee != null) {
+                System.out.println(employee.toString());
+            }
+            totalSalary += salary;
         }
 
         NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.US);
