@@ -1,14 +1,13 @@
 package elenaromanova.employees;
 
-import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Manager extends Employee {
     private int orgSize;
     private int directReport;
-    private final int BASE_SALARY = 3000;
-    private final int BASE_ORG_SIZE = 60;
+    private final int baseSalary = 3000;
+    private final int baseOrgSize = 60;
     private final String managerRegExp = "orgSize=(?<orgSize>\\d+),dr=(?<dr>\\d+)";
     private final Pattern managerPattern = Pattern.compile(managerRegExp);
     public Manager(String personText) {
@@ -20,7 +19,7 @@ public class Manager extends Employee {
         }
     }
     public int getSalary() {
-        int orgSizeBonus = Math.max(orgSize - BASE_ORG_SIZE, 0) * 10;
-        return BASE_SALARY + orgSizeBonus + directReport * 25;
+        int orgSizeBonus = Math.max(orgSize - baseOrgSize, 0) * 10;
+        return baseSalary + orgSizeBonus + directReport * 25;
     }
 }

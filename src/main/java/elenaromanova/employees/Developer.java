@@ -4,14 +4,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Developer extends Employee {
-    private final int BASE_SALARY = 2800;
+    private final int baseSalary = 2800;
     private int linesOfCode;
     private int yearsOfExperience;
     private int iq;
-    private final int BASE_AMOUNT_OF_LINES = 1150;
-    private final int YEARS_BONUS = 200;
-    private final int IQ_BASE = 100;
-    private final int IQ_BONUS = 100;
+    private final int baseAmountOfLines = 1150;
+    private final int yearsBonus = 200;
+    private final int iqBase = 100;
+    private final int iqBonus = 100;
     private final String devRegExp = "locpd=(?<locpd>\\d+),yoe=(?<yoe>\\d+),iq=(?<iq>\\d+)";
     private final Pattern devPattern = Pattern.compile(devRegExp);
     public Developer(String personText) {
@@ -24,9 +24,9 @@ public class Developer extends Employee {
         }
     }
     public int getSalary() {
-        int linesAdd = Math.max(linesOfCode - BASE_AMOUNT_OF_LINES, 0);
-        int yearsAdd = yearsOfExperience * YEARS_BONUS;
-        int iqAdd = Math.max(iq - IQ_BASE, 0) * IQ_BONUS;
-        return BASE_SALARY + linesAdd + yearsAdd + iqAdd;
+        int linesAdd = Math.max(linesOfCode - baseAmountOfLines, 0);
+        int yearsAdd = yearsOfExperience * yearsBonus;
+        int iqAdd = Math.max(iq - iqBase, 0) * iqBonus;
+        return baseSalary + linesAdd + yearsAdd + iqAdd;
     }
 }
