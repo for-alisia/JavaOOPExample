@@ -1,6 +1,41 @@
 package elenaromanova.employees;
 
-public interface Employee {
-    // All methods in Interfaces are considered as public
-    int getSalary();
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Employee {
+    protected final String ROLE = "Employee";
+    protected final int BASE_SALARY = 0;
+    protected final NumberFormat moneyFormat = NumberFormat.getCurrencyInstance(Locale.US);
+    private final String peopleRegExp = "(?<firstName>\\w+),\\s*(?<lastName>\\w+),\\s*(?<birthdate>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
+    protected final Pattern peoplePattern = Pattern.compile(peopleRegExp);
+    protected final Matcher peopleMatcher;
+    protected String lastName;
+    protected String firstName;
+    protected LocalDate dob;
+    protected DateTimeFormatter dtFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    public Employee(String personText) {
+        peopleMatcher = peoplePattern.matcher(personText);
+
+        if (peopleMatcher.matches()) {
+            lastName = peopleMatcher.group("lastName");
+            firstName = peopleMatcher.group("firstName");
+            dob = LocalDate.from(dtFormatter.parse(peopleMatcher.group("birthdate")));
+        }
+
+    }
+
+    public int getSalary() {
+        return 0;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s, %s (%s): %s", firstName, lastName, this.ROLE, moneyFormat.format(getSalary()));
+    }
 }
