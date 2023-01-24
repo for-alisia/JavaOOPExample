@@ -1,6 +1,7 @@
 package elenaromanova.employees;
 
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
@@ -31,5 +32,9 @@ public class Main {
         NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.US);
 
         System.out.printf("Total salary is %s%n", currencyInstance.format(totalSalary));
+
+        RecordExample myRecord = new RecordExample("John", "Doe", LocalDate.of(1900, 8, 12));
+
+        System.out.println(myRecord.firstName());
     }
 }
