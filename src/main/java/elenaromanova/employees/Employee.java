@@ -37,13 +37,15 @@ public abstract class Employee implements IEmployee {
         }
     }
 
-    public static Employee createEmployee(String empText) {
+    // Factory
+    public static IEmployee createEmployee(String empText) {
         Matcher peopleMatcher = Employee.PATTERN.matcher(empText);
         if (peopleMatcher.matches()) {
             return switch(peopleMatcher.group("role")) {
                 case "Manager" -> new Manager(empText);
                 case "Analyst" -> new Analyst(empText);
                 case "Developer" -> new Developer(empText);
+                case "WithLambda" -> () -> 0;
                 default -> new BaseEmployee();
             };
         }

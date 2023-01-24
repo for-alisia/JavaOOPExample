@@ -19,9 +19,4 @@ public record RecordExample(String firstName, String lastName, LocalDate dob) im
     public int getSalary() {
         return 0;
     }
-
-    @Override
-    public double getBonus() {
-        return 0;
-    }
 }
