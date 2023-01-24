@@ -3,7 +3,14 @@ package elenaromanova.employees;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Manager extends Employee {
+public class Manager extends Employee implements Flyer {
+    // Composition to make Manager also a Pilot
+    // In Java we can't extend from multiple classes
+    // This is a workaround how to do it
+    // 1. extract interface from the second class
+    // 2. crete field of type of this interface
+    // 3. Delegate methods
+    private Pilot pilot = new Pilot(1000, true);
     private int orgSize;
     private int directReport;
     private final int baseSalary = 3000;
@@ -21,5 +28,26 @@ public class Manager extends Employee {
     public int getSalary() {
         int orgSizeBonus = Math.max(orgSize - baseOrgSize, 0) * 10;
         return baseSalary + orgSizeBonus + directReport * 25;
+    }
+
+    // Delegated methods (Ctrl + N -> Delegate methods)
+    public void fly() {
+        pilot.fly();
+    }
+
+    public int getHoursFlown() {
+        return pilot.getHoursFlown();
+    }
+
+    public void setHoursFlown(int hoursFlown) {
+        pilot.setHoursFlown(hoursFlown);
+    }
+
+    public boolean isIfr() {
+        return pilot.isIfr();
+    }
+
+    public void setIfr(boolean ifr) {
+        pilot.setIfr(ifr);
     }
 }

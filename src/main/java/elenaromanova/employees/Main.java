@@ -23,8 +23,10 @@ public class Main {
         double totalSalary = 0;
         while(peopleMatcher.find()) {
             String row = peopleMatcher.group();
+            Flyer flyer = new Manager(row);
+            flyer.fly();
             IEmployee employee =  Employee.createEmployee(peopleMatcher.group());
-            double salary = employee.getSalary() + employee.getBonus();
+            double salary = employee.getSalary();
             System.out.println(employee.toString());
             totalSalary += salary;
         }
