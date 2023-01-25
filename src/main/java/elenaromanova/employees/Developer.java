@@ -3,7 +3,7 @@ package elenaromanova.employees;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Developer extends Employee {
+public class Developer extends Employee implements Interviewer {
     private final int baseSalary = 2800;
     private int linesOfCode;
     private int yearsOfExperience;

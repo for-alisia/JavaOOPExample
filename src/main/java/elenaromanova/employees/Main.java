@@ -38,5 +38,9 @@ public class Main {
         RecordExample myRecord = new RecordExample("John", "Doe", LocalDate.of(1900, 8, 12));
 
         System.out.println(myRecord.firstName());
+
+        Developer newDev = new Developer("");
+
+        System.out.println(newDev.getAmountOfInterviews());
     }
 }
