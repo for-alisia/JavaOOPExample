@@ -6,6 +6,11 @@ import java.util.regex.Pattern;
 public class Analyst extends Employee {
     private int projectCount;
     private final int baseSalary = 2500;
+
+    public int getBaseAmountOfProjects() {
+        return baseAmountOfProjects;
+    }
+
     private final int baseAmountOfProjects = 5;
     private final String analystRegExp = "projectCount=(?<projectCount>\\d+)";
     private final Pattern analystPattern = Pattern.compile(analystRegExp);

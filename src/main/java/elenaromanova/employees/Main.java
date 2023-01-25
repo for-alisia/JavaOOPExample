@@ -28,6 +28,21 @@ public class Main {
             IEmployee employee =  Employee.createEmployee(peopleMatcher.group());
             double salary = employee.getSalary();
             System.out.println(employee.toString());
+            // How we can define if object belongs to a certain class
+            // getClass will check to a certain class only
+            // instanceof checks the whole hierarchy chain
+            // emp instanceof Developer - true and emp instanceof Employee - true
+            if (employee.getClass().equals(Developer.class)) {
+                // Here we need to cast that employee is a Developer
+                // Developer dev = (Developer) employee;
+                System.out.println(((Developer) employee).getIq());
+            } else if (employee instanceof Manager) {
+                System.out.println("Manager");
+            } else if (employee instanceof Analyst analyst) {
+                // With more modern (16+) variation of instanceof we can cast it immediately to a variable
+                System.out.println(analyst.getBaseAmountOfProjects());
+            }
+
             totalSalary += salary;
         }
 
@@ -39,8 +54,8 @@ public class Main {
 
         System.out.println(myRecord.firstName());
 
-        Developer newDev = new Developer("");
-
-        System.out.println(newDev.getAmountOfInterviews());
+//        Developer newDev = new Developer("");
+//
+//        System.out.println(newDev.getAmountOfInterviews());
     }
 }

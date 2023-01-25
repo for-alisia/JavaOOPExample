@@ -7,6 +7,15 @@ public class Developer extends Employee implements Interviewer {
     private final int baseSalary = 2800;
     private int linesOfCode;
     private int yearsOfExperience;
+
+    public int getIq() {
+        return iq;
+    }
+
+    public void setIq(int iq) {
+        this.iq = iq;
+    }
+
     private int iq;
     private final int baseAmountOfLines = 1150;
     private final int yearsBonus = 200;
