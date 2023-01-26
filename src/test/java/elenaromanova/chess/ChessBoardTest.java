@@ -14,9 +14,9 @@ class ChessBoardTest {
     @Test
     void shouldAddPawn() {
         ChessBoard chessBoard = new ChessBoard();
-        IFigure pawn = new Pawn();
+        Figure pawn = new Pawn("black");
         chessBoard.add(pawn, "a1");
-        IFigure figure = chessBoard.getFigureByCoords("a1");
+        Figure figure = chessBoard.getFigureByCoords("a1");
 
         assertEquals(pawn, figure);
     }
