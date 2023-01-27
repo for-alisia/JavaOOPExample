@@ -20,4 +20,15 @@ class ChessBoardTest {
 
         assertEquals(pawn, figure);
     }
+
+    @Test
+    void shouldAddKnight() {
+        ChessBoard chessBoard = new ChessBoard();
+        Figure knight = new Knight("white");
+        chessBoard.add(knight, "c3");
+        Knight figure = (Knight) chessBoard.getFigureByCoords("c3");
+
+        assertEquals(knight, figure);
+    }
+
 }

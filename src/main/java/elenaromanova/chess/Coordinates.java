@@ -4,24 +4,24 @@ public class Coordinates {
     private int xCoord;
     private int yCoord;
     public Coordinates(String coords) {
-        char xRank = coords.charAt(0);
-        this.yCoord = Integer.parseInt(String.valueOf(coords.charAt(1)));
+        this.yCoord = translateYCoord(coords.charAt(1));
         this.xCoord = translateXCoord(coords.charAt(0));
     }
 
-    public int translateXCoord(char x) {
+    private int translateXCoord(char x) {
         return x - 97;
     }
 
-    public void setxCoord(int xCoord) {
-        this.xCoord = xCoord;
+    private int translateYCoord(char y) {
+        int num = Integer.parseInt(String.valueOf(y));
+        return 8 - num;
     }
 
-    public int getyCoord() {
+    public int getX() {
+        return xCoord;
+    }
+
+    public int getY() {
         return yCoord;
-    }
-
-    public void setyCoord(int yCoord) {
-        this.yCoord = yCoord;
     }
 }
