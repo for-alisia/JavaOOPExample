@@ -1,8 +1,8 @@
 package elenaromanova.chess;
 
 public abstract class Figure {
-    String color;
-    public Figure(String color) {
+    Color color;
+    public Figure(Color color) {
         this.color = color;
     }
 }

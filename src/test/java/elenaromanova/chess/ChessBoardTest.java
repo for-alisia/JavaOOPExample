@@ -14,7 +14,7 @@ class ChessBoardTest {
     @Test
     void shouldAddPawn() {
         ChessBoard chessBoard = new ChessBoard();
-        Figure pawn = new Pawn("black");
+        Figure pawn = new Pawn(Color.WHITE);
         chessBoard.add(pawn, "a1");
         Figure figure = chessBoard.getFigureByCoords("a1");
 
@@ -24,7 +24,7 @@ class ChessBoardTest {
     @Test
     void shouldAddKnight() {
         ChessBoard chessBoard = new ChessBoard();
-        Figure knight = new Knight("white");
+        Figure knight = new Knight(Color.BLACK);
         chessBoard.add(knight, "c3");
         Knight figure = (Knight) chessBoard.getFigureByCoords("c3");
 

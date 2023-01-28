@@ -1,7 +1,7 @@
 package elenaromanova.chess;
 
 public class Pawn extends Figure {
-    public Pawn(String color) {
+    public Pawn(Color color) {
         super(color);
     }
 }

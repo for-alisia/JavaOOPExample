@@ -1,7 +1,7 @@
 package elenaromanova.chess;
 
 public class Knight extends Figure {
-    public Knight(String color) {
+    public Knight(Color color) {
         super(color);
     }
 }
