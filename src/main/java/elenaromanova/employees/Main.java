@@ -28,57 +28,31 @@ public class Main {
         List<IEmployee> workers = new LinkedList<>();
         while(peopleMatcher.find()) {
             String row = peopleMatcher.group();
-            Flyer flyer = new Manager(row);
-            flyer.fly();
+            // Composition example
+            createCompositionExample(row);
             IEmployee employee =  Employee.createEmployee(peopleMatcher.group());
             double salary = employee.getSalary();
             // Adding an object to a collections (only Objects are allowed for collections)
             employees.add(employee);
             workers.add(employee);
             totalSalary += salary;
-            // How we can define if object belongs to a certain class
-            // getClass will check to a certain class only
-            // instanceof checks the whole hierarchy chain
-            // emp instanceof Developer - true and emp instanceof Employee - true
-            if (employee.getClass().equals(Developer.class)) {
-                // Here we need to cast that employee is a Developer
-                // Developer dev = (Developer) employee;
-                System.out.println(((Developer) employee).getIq());
-            } else if (employee instanceof Manager) {
-                System.out.println("Manager");
-            } else if (employee instanceof Analyst analyst) {
-                // With more modern (16+) variation of instanceof we can cast it immediately to a variable
-                System.out.println(analyst.getBaseAmountOfProjects());
-            }
+            // Example of instanceof, getClass
+            showEmployeeDetails(employee);
         }
 
-        NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.US);
+        printTotalSalary(totalSalary);
 
-        System.out.printf("Total salary is %s%n", currencyInstance.format(totalSalary));
+        // We can access by indexes
+        IEmployee first = employees.get(0);
 
-        List<String> removalNames = new ArrayList<>();
-        removalNames.add("Doe");
-        removalNames.add("Lids");
+        // Adding multiple values to the List
+        List<String> removalNames = List.of("Doe", "Lids");
+        removeUndesirable(employees, removalNames);
 
-        // Looping through the collection
+        // Looping through the collection - enhanced loop
         for (IEmployee employee : employees) {
             System.out.println(employee.toString());
         }
-
-        // Looping with iterators
-        // if you need to remove elements during the iteration - enhanced loop throws an error
-        for (Iterator<IEmployee> it = employees.iterator(); it.hasNext(); ) {
-            IEmployee employee = it.next();
-            if (employee instanceof Employee) {
-                // We need to cast as IEmployee doesn't have getters
-                String lastName = ((Employee)employee).getLastName();
-                if (removalNames.contains(lastName)) {
-                    it.remove();
-                }
-            }
-        };
-
-
 
         RecordExample myRecord = new RecordExample("John", "Doe", LocalDate.of(1900, 8, 12));
 
@@ -87,5 +61,47 @@ public class Main {
 //        Developer newDev = new Developer("");
 //
 //        System.out.println(newDev.getAmountOfInterviews());
+    }
+
+    private static void printTotalSalary(double totalSalary) {
+        NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.US);
+        System.out.printf("Total salary is %s%n", currencyInstance.format(totalSalary));
+    }
+
+    private static void createCompositionExample(String row) {
+        // Example of using composition
+        Flyer flyer = new Manager(row);
+        flyer.fly();
+    }
+
+    private static void showEmployeeDetails(IEmployee employee) {
+        // How we can define if object belongs to a certain class
+        // getClass will check to a certain class only
+        // instanceof checks the whole hierarchy chain
+        // emp instanceof Developer - true and emp instanceof Employee - true
+        if (employee.getClass().equals(Developer.class)) {
+            // Here we need to cast that employee is a Developer
+            // Developer dev = (Developer) employee;
+            System.out.println(((Developer) employee).getIq());
+        } else if (employee instanceof Manager) {
+            System.out.println("Manager");
+        } else if (employee instanceof Analyst analyst) {
+            // With more modern (16+) variation of instanceof we can cast it immediately to a variable
+            System.out.println(analyst.getBaseAmountOfProjects());
+        }
+    }
+
+    private static void removeUndesirable(List<IEmployee> employees, List<String> removalNames) {
+        // Looping with iterators
+        // if you need to remove elements during the iteration - enhanced loop throws an error
+        for (Iterator<IEmployee> it = employees.iterator(); it.hasNext(); ) {
+            IEmployee employee = it.next();
+            if (employee instanceof Employee empl) {
+                // We need to cast as IEmployee doesn't have getters
+                if (removalNames.contains(empl.getLastName())) {
+                    it.remove();
+                }
+            }
+        }
     }
 }
