@@ -2,6 +2,8 @@ package elenaromanova.employees;
 
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 
@@ -21,13 +23,17 @@ public class Main {
         Matcher peopleMatcher = Employee.PATTERN.matcher(people);
 
         double totalSalary = 0;
+        // Collections - List (ArrayList)
+        List<IEmployee> employees = new ArrayList<>();
         while(peopleMatcher.find()) {
             String row = peopleMatcher.group();
             Flyer flyer = new Manager(row);
             flyer.fly();
             IEmployee employee =  Employee.createEmployee(peopleMatcher.group());
             double salary = employee.getSalary();
-            System.out.println(employee.toString());
+            // Adding an object to a collections (only Objects are allowed for collections)
+            employees.add(employee);
+            totalSalary += salary;
             // How we can define if object belongs to a certain class
             // getClass will check to a certain class only
             // instanceof checks the whole hierarchy chain
@@ -42,13 +48,16 @@ public class Main {
                 // With more modern (16+) variation of instanceof we can cast it immediately to a variable
                 System.out.println(analyst.getBaseAmountOfProjects());
             }
-
-            totalSalary += salary;
         }
 
         NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.US);
 
         System.out.printf("Total salary is %s%n", currencyInstance.format(totalSalary));
+
+        // Looping through the collection
+        for (IEmployee employee : employees) {
+            System.out.println(employee.toString());
+        }
 
         RecordExample myRecord = new RecordExample("John", "Doe", LocalDate.of(1900, 8, 12));
 
