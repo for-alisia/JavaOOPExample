@@ -2,9 +2,7 @@ package elenaromanova.employees;
 
 import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 
 public class Main {
@@ -24,7 +22,10 @@ public class Main {
 
         double totalSalary = 0;
         // Collections - List (ArrayList)
+        // List is an interface, most common options are ArrayList or LinkedList
+        // The difference is internal implementation
         List<IEmployee> employees = new ArrayList<>();
+        List<IEmployee> workers = new LinkedList<>();
         while(peopleMatcher.find()) {
             String row = peopleMatcher.group();
             Flyer flyer = new Manager(row);
@@ -33,6 +34,7 @@ public class Main {
             double salary = employee.getSalary();
             // Adding an object to a collections (only Objects are allowed for collections)
             employees.add(employee);
+            workers.add(employee);
             totalSalary += salary;
             // How we can define if object belongs to a certain class
             // getClass will check to a certain class only
@@ -54,10 +56,29 @@ public class Main {
 
         System.out.printf("Total salary is %s%n", currencyInstance.format(totalSalary));
 
+        List<String> removalNames = new ArrayList<>();
+        removalNames.add("Doe");
+        removalNames.add("Lids");
+
         // Looping through the collection
         for (IEmployee employee : employees) {
             System.out.println(employee.toString());
         }
+
+        // Looping with iterators
+        // if you need to remove elements during the iteration - enhanced loop throws an error
+        for (Iterator<IEmployee> it = employees.iterator(); it.hasNext(); ) {
+            IEmployee employee = it.next();
+            if (employee instanceof Employee) {
+                // We need to cast as IEmployee doesn't have getters
+                String lastName = ((Employee)employee).getLastName();
+                if (removalNames.contains(lastName)) {
+                    it.remove();
+                }
+            }
+        };
+
+
 
         RecordExample myRecord = new RecordExample("John", "Doe", LocalDate.of(1900, 8, 12));
 
