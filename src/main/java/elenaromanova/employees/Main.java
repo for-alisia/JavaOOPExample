@@ -43,11 +43,29 @@ public class Main {
         printTotalSalary(totalSalary);
 
         // We can access by indexes
-        IEmployee first = employees.get(0);
+        IEmployee third = employees.get(2);
+        System.out.println(employees.indexOf(third)); // 2 - will return an index of the element
+
+        // Convert collection to array with predefined custom type
+        IEmployee[] employeesArray = employees.toArray(new IEmployee[0]);
 
         // Adding multiple values to the List
+        // List created with List.of is unmodified
         List<String> removalNames = List.of("Doe", "Lids");
         removeUndesirable(employees, removalNames);
+
+        // Adding one collection to another one
+        List<String> newList = new ArrayList<>();
+        newList.addAll(removalNames);
+        // The same with the constructor
+        List<String> secondList = new ArrayList<>(removalNames);
+        newList.set(0, "Replaced");
+        // To get a subset
+        newList.subList(0, 2);
+        System.out.println(newList.size());
+        // We can clear the whole collection
+        secondList.clear();
+        System.out.println(secondList.isEmpty()); // check if collection is empty
 
         // Looping through the collection - enhanced loop
         for (IEmployee employee : employees) {
