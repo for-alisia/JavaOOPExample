@@ -4,6 +4,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +39,18 @@ public abstract class Employee implements IEmployee {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee employee)) return false;
+        return lastName.equals(employee.lastName) && firstName.equals(employee.firstName) && dob.equals(employee.dob);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lastName, firstName, dob);
     }
 
     public void setFirstName(String firstName) {

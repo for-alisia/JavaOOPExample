@@ -24,6 +24,7 @@ public class Main {
         // Collections - List (ArrayList)
         // List is an interface, most common options are ArrayList or LinkedList
         // The difference is internal implementation
+        // The same for: containAll, indexOf, remove, removeAll and others using equals under the hood
         List<IEmployee> employees = new ArrayList<>();
         List<IEmployee> workers = new LinkedList<>();
         while(peopleMatcher.find()) {
@@ -45,6 +46,11 @@ public class Main {
         // We can access by indexes
         IEmployee third = employees.get(2);
         System.out.println(employees.indexOf(third)); // 2 - will return an index of the element
+
+        IEmployee customEmployee = Employee.createEmployee("Anna, Doe, 11/02/1976, Manager, {orgSize=300,dr=10}");
+        // To make it work we need to Override equals method on Employee class to "teach" it how to compare instances
+        // Otherwise it will use default method and compare memory locations for 2 objects
+        System.out.println(employees.contains(customEmployee));
 
         // Convert collection to array with predefined custom type
         IEmployee[] employeesArray = employees.toArray(new IEmployee[0]);
