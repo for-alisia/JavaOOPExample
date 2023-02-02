@@ -98,6 +98,7 @@ public class Main {
         flyer.fly();
     }
 
+    // Example of instanceof, getClass
     private static void showEmployeeDetails(IEmployee employee) {
         // How we can define if object belongs to a certain class
         // getClass will check to a certain class only
