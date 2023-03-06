@@ -73,6 +73,23 @@ public class Main {
         secondList.clear();
         System.out.println(secondList.isEmpty()); // check if collection is empty
 
+        // Let's print all employees in alphabetical order
+        // We use anonymous class (as we use it only here)
+        // Sort do not return new collection, but modify original
+        // It should return 0 for equal values, 1 - if first should go first, -1 - if first should go second
+        employees.sort(new Comparator<IEmployee>() {
+            @Override
+            public int compare(IEmployee o1, IEmployee o2) {
+                // we can compare only Employees (as having lastName)
+                if (o1 instanceof  Employee emp1 && o2  instanceof Employee emp2) {
+                    int lnResult = emp1.lastName.compareTo(emp2.lastName);
+
+                    return lnResult != 0 ? lnResult : emp1.firstName.compareTo(emp2.firstName);
+                }
+                return 0;
+            }
+        });
+
         // Looping through the collection - enhanced loop
         for (IEmployee employee : employees) {
             System.out.println(employee.toString());
