@@ -57,7 +57,9 @@ public class Main {
 
         // Adding multiple values to the List
         // List created with List.of is unmodified
-        List<String> removalNames = List.of("Doe", "Lids");
+        List<String> removalNames = new ArrayList<>(List.of("Doe", "Lids", "Aaron"));
+        removalNames.sort(Comparator.naturalOrder());
+        System.out.println(removalNames);
         removeUndesirable(employees, removalNames);
 
         // Adding one collection to another one
@@ -77,6 +79,7 @@ public class Main {
         // We use anonymous class (as we use it only here)
         // Sort do not return new collection, but modify original
         // It should return 0 for equal values, 1 - if first should go first, -1 - if first should go second
+        // We can use more old "classic" approach with anonymous class
         employees.sort(new Comparator<IEmployee>() {
             @Override
             public int compare(IEmployee o1, IEmployee o2) {
@@ -89,6 +92,29 @@ public class Main {
                 return 0;
             }
         });
+
+        // The second option is to use lambda
+        employees.sort((o1, o2) -> {
+            if (o1 instanceof  Employee emp1 && o2  instanceof Employee emp2) {
+                int lnResult = emp1.lastName.compareTo(emp2.lastName);
+
+                return lnResult != 0 ? lnResult : emp1.firstName.compareTo(emp2.firstName);
+            }
+            return 0;
+        });
+
+        // The third option is Collections (utility) class
+        Collections.sort(employees, (o1, o2) -> {
+            if (o1 instanceof  Employee emp1 && o2  instanceof Employee emp2) {
+                int lnResult = emp1.lastName.compareTo(emp2.lastName);
+
+                return lnResult != 0 ? lnResult : emp1.firstName.compareTo(emp2.firstName);
+            }
+            return 0;
+        });
+
+        // The fourth option - to implement Comparable on the class and use built-in Comparators
+        Collections.sort(employees, Comparator.naturalOrder());
 
         // Looping through the collection - enhanced loop
         for (IEmployee employee : employees) {

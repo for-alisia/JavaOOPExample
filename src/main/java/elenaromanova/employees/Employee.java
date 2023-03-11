@@ -74,7 +74,7 @@ public abstract class Employee implements IEmployee {
                 case "Manager" -> new Manager(empText);
                 case "Analyst" -> new Analyst(empText);
                 case "Developer" -> new Developer(empText);
-                case "WithLambda" -> () -> 0;
+                // case "WithLambda" -> () -> 0; - not possible if interface implements more than 1 method
                 default -> new BaseEmployee();
             };
         }
@@ -87,6 +87,11 @@ public abstract class Employee implements IEmployee {
         return new Employee() {
             @Override
             public int getSalary() {
+                return 0;
+            }
+
+            @Override
+            public int compareTo(IEmployee o) {
                 return 0;
             }
         };
@@ -104,12 +109,25 @@ public abstract class Employee implements IEmployee {
         return String.format("%s, %s (%s): %s (bonus: %s)", firstName, lastName, role, moneyFormat.format(getSalary()), moneyFormat.format(getBonus()));
     }
 
+    @Override
+    public int compareTo(IEmployee o) {
+        if (o instanceof Employee emp) {
+            return this.lastName.compareTo(emp.lastName);
+        }
+        return 0;
+    }
+
     // NESTED CLASS
     // We also have inner classes (no static, they have access to fields of upper class not via inheritance)
     // it means we can not extend them from outer class, but they will have access to its methods and fields
     private static final class BaseEmployee extends Employee {
         @Override
         public int getSalary() {
+            return 0;
+        }
+
+        @Override
+        public int compareTo(IEmployee o) {
             return 0;
         }
     }
