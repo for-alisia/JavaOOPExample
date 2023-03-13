@@ -9,6 +9,8 @@ public class Main {
     public static void main(String[] args) {
         String people = """
                 Anna, Doe, 11/02/1976, Manager, {orgSize=300,dr=10}
+                Anna, Doe, 11/02/1976, Manager, {orgSize=300,dr=10}
+                Anna, Doe, 11/02/1976, Manager, {orgSize=300,dr=10}
                 Stephen, Rider, 11/02/1976, Manager, {orgSize=150,dr=5}
                 Anton, Lids, 11/02/1976, Manager, {orgSize=180,dr=8}
                 John, Smith, 23/09/1999, Analyst, {projectCount=5}
@@ -16,6 +18,8 @@ public class Main {
                 Alex, Green, 23/09/1999, Analyst, {projectCount=10}
                 Max, Jonas, 10/01/1987, Developer, {locpd=2000,yoe=10,iq=140}
                 Lisa, Doll, 22/02/1987, Developer, {locpd=1300,yoe=3,iq=105}
+                Andrea, Black, 30/03/1987, Developer, {locpd=1600,yoe=7,iq=100}
+                Andrea, Black, 30/03/1987, Developer, {locpd=1600,yoe=7,iq=100}
                 Andrea, Black, 30/03/1987, Developer, {locpd=1600,yoe=7,iq=100}
                 """;
         Matcher peopleMatcher = Employee.PATTERN.matcher(people);
@@ -27,6 +31,21 @@ public class Main {
         // The same for: containAll, indexOf, remove, removeAll and others using equals under the hood
         List<IEmployee> employees = new ArrayList<>();
         List<IEmployee> workers = new LinkedList<>();
+        // Set allows to exclude duplicates (depends on implementation) - order is unpredictable
+        // Under Employee class we need to implement hashCode method (usually we generate it together with equals by IDE)
+        // Otherwise we will have default implementation (uniqueness for each Object)
+        // hashCode() and equals() should relay on the same properties as internally HashSet after getting the same hash sum will check equals() on both objects
+        // HashSet is the fastest, but also we have LinkedHashSet and TreeSet
+        // Set interface can't access elements with get() method (like indexes)
+        Set<IEmployee> uniqueEmployees = new HashSet<>();
+        // LinkedHashSet keeps the original order of elements, but it's slower than HashSet
+        // Set<IEmployee> uniqueEmployees = new LinkedHashSet<>();
+        // TreeSet keeps natural order (like alphabetically, but we can keep control)
+        // TreeSet uses compareTo() method under the hood, and if compareTo returns 0 - element will be excluded
+        // We should be very specific implementing compareTo method
+        // Set<IEmployee> uniqueEmployees = new TreeSet<>();
+        // Or we could pass a Comparator if our objects do not have compareTo implementation, or we want to change it in flight
+        // Set<IEmployee> uniqueEmployees = new TreeSet<>((o1, o2) -> ...comparator code here...);
         while(peopleMatcher.find()) {
             String row = peopleMatcher.group();
             // Composition example
@@ -36,9 +55,10 @@ public class Main {
             // Adding an object to a collections (only Objects are allowed for collections)
             employees.add(employee);
             workers.add(employee);
+            uniqueEmployees.add(employee);
             totalSalary += salary;
             // Example of instanceof, getClass
-            showEmployeeDetails(employee);
+            // showEmployeeDetails(employee);
         }
 
         printTotalSalary(totalSalary);
@@ -46,6 +66,11 @@ public class Main {
         // We can access by indexes
         IEmployee third = employees.get(2);
         System.out.println(employees.indexOf(third)); // 2 - will return an index of the element
+
+        // For sets:
+        List<IEmployee> tempEmps = new ArrayList<>(uniqueEmployees); // first convert to an array (expensive operation)
+        IEmployee fourth = tempEmps.get(3);
+        System.out.println(fourth);
 
         IEmployee customEmployee = Employee.createEmployee("Anna, Doe, 11/02/1976, Manager, {orgSize=300,dr=10}");
         // To make it work we need to Override equals method on Employee class to "teach" it how to compare instances
@@ -121,6 +146,12 @@ public class Main {
             System.out.println(employee.toString());
         }
 
+        System.out.println("-----------------");
+        // Set doesn't contain duplicates, but order is not predictable
+        for(IEmployee uniqueEmployee : uniqueEmployees) {
+            System.out.println(uniqueEmployee.toString());
+        }
+
         RecordExample myRecord = new RecordExample("John", "Doe", LocalDate.of(1900, 8, 12));
 
         System.out.println(myRecord.firstName());
@@ -138,7 +169,7 @@ public class Main {
     private static void createCompositionExample(String row) {
         // Example of using composition
         Flyer flyer = new Manager(row);
-        flyer.fly();
+        // flyer.fly();
     }
 
     // Example of instanceof, getClass

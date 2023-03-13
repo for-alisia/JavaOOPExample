@@ -19,4 +19,9 @@ public record RecordExample(String firstName, String lastName, LocalDate dob) im
     public int getSalary() {
         return 0;
     }
+
+    @Override
+    public int compareTo(IEmployee o) {
+        return 0;
+    }
 }

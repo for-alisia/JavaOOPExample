@@ -112,7 +112,8 @@ public abstract class Employee implements IEmployee {
     @Override
     public int compareTo(IEmployee o) {
         if (o instanceof Employee emp) {
-            return this.lastName.compareTo(emp.lastName);
+            String fullName = lastName.concat(firstName);
+            return fullName.compareTo(emp.lastName.concat(emp.firstName));
         }
         return 0;
     }
