@@ -6,6 +6,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 
 public class Main {
+
+    private static List<IEmployee> employees;
+    private static List<IEmployee> workers;
+    private static Set<IEmployee> uniqueEmployees;
+
     public static void main(String[] args) {
         String people = """
                 Anna, Doe, 11/02/1976, Manager, {orgSize=300,dr=10}
@@ -29,15 +34,15 @@ public class Main {
         // List is an interface, most common options are ArrayList or LinkedList
         // The difference is internal implementation
         // The same for: containAll, indexOf, remove, removeAll and others using equals under the hood
-        List<IEmployee> employees = new ArrayList<>();
-        List<IEmployee> workers = new LinkedList<>();
+        employees = new ArrayList<>();
+        workers = new LinkedList<>();
         // Set allows to exclude duplicates (depends on implementation) - order is unpredictable
         // Under Employee class we need to implement hashCode method (usually we generate it together with equals by IDE)
         // Otherwise we will have default implementation (uniqueness for each Object)
         // hashCode() and equals() should relay on the same properties as internally HashSet after getting the same hash sum will check equals() on both objects
         // HashSet is the fastest, but also we have LinkedHashSet and TreeSet
         // Set interface can't access elements with get() method (like indexes)
-        Set<IEmployee> uniqueEmployees = new HashSet<>();
+        uniqueEmployees = new HashSet<>();
         // LinkedHashSet keeps the original order of elements, but it's slower than HashSet
         // Set<IEmployee> uniqueEmployees = new LinkedHashSet<>();
         // TreeSet keeps natural order (like alphabetically, but we can keep control)
@@ -202,5 +207,17 @@ public class Main {
                 }
             }
         }
+    }
+
+    public int getSalary(String firstName) {
+        for (IEmployee employee : uniqueEmployees) {
+           Employee emp = (Employee) employee;
+
+           if (firstName.equals(emp.firstName)) {
+               return emp.getSalary();
+           }
+        }
+
+        return 0;
     }
 }
