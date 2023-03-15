@@ -29,6 +29,12 @@ public class Main {
     // Set<IEmployee> uniqueEmployees = new TreeSet<>((o1, o2) -> ...comparator code here...);
     private static Set<IEmployee> uniqueEmployees = new HashSet<>();;
     private static double totalSalary = 0;
+    // Map allows to keep object to object relations and fast to access the elements
+    // In Map if the key is already exists, value will be replaced
+    // HashMap is the fastest (no order is guaranteed)
+    // TreeMap - naturally ordered by keys (key should be Comparable) - for String alphabetically
+    // LinkedHashMap - keeps original order
+    private static Map<String, Integer> nameToSalaryMap = new HashMap<>();;
 
     public static void main(String[] args) {
         String people = """
@@ -51,11 +57,15 @@ public class Main {
         while(peopleMatcher.find()) {
             String row = peopleMatcher.group();
             IEmployee employee =  Employee.createEmployee(peopleMatcher.group());
+            Employee emp = (Employee) employee;
             double salary = employee.getSalary();
             // Adding an object to a collections (only Objects are allowed for collections)
             employees.add(employee);
             workers.add(employee);
             uniqueEmployees.add(employee);
+            // If we want not to override elements in the Map - we can use myMap.putIfAbsent
+            nameToSalaryMap.put(emp.firstName, emp.getSalary());
+
             totalSalary += salary;
         }
 
@@ -68,7 +78,8 @@ public class Main {
     }
 
     // Business logic
-    public int getSalary(String firstName) {
+    public int getSalarySlow(String firstName) {
+        // This implementation works, but it's too slow as we need to iterate through whole collection
         for (IEmployee employee : uniqueEmployees) {
             Employee emp = (Employee) employee;
 
@@ -80,9 +91,28 @@ public class Main {
         return 0;
     }
 
+    public int getSalary(String firstName) {
+        // Map is much faster (no need to iterate through collection)
+        return nameToSalaryMap.getOrDefault(firstName, -1); // If name is not in Map, default will be returned
+    }
+
     private static void printTotalSalary(double totalSalary) {
         NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.US);
         System.out.printf("Total salary is %s%n", currencyInstance.format(totalSalary));
+    }
+
+    // Maps
+    private static void mapMethodsExamples() {
+        System.out.println(nameToSalaryMap.values()); // Collection of all values
+        System.out.println(nameToSalaryMap.keySet()); // Set of keys - as keys are unique
+        System.out.println(nameToSalaryMap.size());
+        System.out.println(nameToSalaryMap.entrySet()); // Set of Entries (key - value pairs) - easy to iterate
+        for (Map.Entry<String, Integer> entry : nameToSalaryMap.entrySet()) {
+            System.out.println(entry.getKey());
+            System.out.println(entry.getValue());
+            entry.setValue(10); // reset value of entry
+        }
+        nameToSalaryMap.remove("Anna"); // removing an entry
     }
 
     // Collections - methods and usage examples
