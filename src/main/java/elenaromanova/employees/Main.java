@@ -7,9 +7,28 @@ import java.util.regex.Matcher;
 
 public class Main {
 
-    private static List<IEmployee> employees;
-    private static List<IEmployee> workers;
-    private static Set<IEmployee> uniqueEmployees;
+    // Collections - List (ArrayList)
+    // List is an interface, most common options are ArrayList or LinkedList
+    // The difference is internal implementation
+    // The same for: containAll, indexOf, remove, removeAll and others using equals under the hood
+    private static List<IEmployee> employees = new ArrayList<>();
+    private static List<IEmployee> workers = new LinkedList<>();
+    // Set allows to exclude duplicates (depends on implementation) - order is unpredictable
+    // Under Employee class we need to implement hashCode method (usually we generate it together with equals by IDE)
+    // Otherwise we will have default implementation (uniqueness for each Object)
+    // hashCode() and equals() should relay on the same properties as internally HashSet after getting the same hash sum will check equals() on both objects
+    // HashSet is the fastest, but also we have LinkedHashSet and TreeSet
+    // Set interface can't access elements with get() method (like indexes)
+    // LinkedHashSet keeps the original order of elements, but it's slower than HashSet
+    // Set<IEmployee> uniqueEmployees = new LinkedHashSet<>();
+    // TreeSet keeps natural order (like alphabetically, but we can keep control)
+    // TreeSet uses compareTo() method under the hood, and if compareTo returns 0 - element will be excluded
+    // We should be very specific implementing compareTo method
+    // Set<IEmployee> uniqueEmployees = new TreeSet<>();
+    // Or we could pass a Comparator if our objects do not have compareTo implementation, or we want to change it in flight
+    // Set<IEmployee> uniqueEmployees = new TreeSet<>((o1, o2) -> ...comparator code here...);
+    private static Set<IEmployee> uniqueEmployees = new HashSet<>();;
+    private static double totalSalary = 0;
 
     public static void main(String[] args) {
         String people = """
@@ -29,32 +48,8 @@ public class Main {
                 """;
         Matcher peopleMatcher = Employee.PATTERN.matcher(people);
 
-        double totalSalary = 0;
-        // Collections - List (ArrayList)
-        // List is an interface, most common options are ArrayList or LinkedList
-        // The difference is internal implementation
-        // The same for: containAll, indexOf, remove, removeAll and others using equals under the hood
-        employees = new ArrayList<>();
-        workers = new LinkedList<>();
-        // Set allows to exclude duplicates (depends on implementation) - order is unpredictable
-        // Under Employee class we need to implement hashCode method (usually we generate it together with equals by IDE)
-        // Otherwise we will have default implementation (uniqueness for each Object)
-        // hashCode() and equals() should relay on the same properties as internally HashSet after getting the same hash sum will check equals() on both objects
-        // HashSet is the fastest, but also we have LinkedHashSet and TreeSet
-        // Set interface can't access elements with get() method (like indexes)
-        uniqueEmployees = new HashSet<>();
-        // LinkedHashSet keeps the original order of elements, but it's slower than HashSet
-        // Set<IEmployee> uniqueEmployees = new LinkedHashSet<>();
-        // TreeSet keeps natural order (like alphabetically, but we can keep control)
-        // TreeSet uses compareTo() method under the hood, and if compareTo returns 0 - element will be excluded
-        // We should be very specific implementing compareTo method
-        // Set<IEmployee> uniqueEmployees = new TreeSet<>();
-        // Or we could pass a Comparator if our objects do not have compareTo implementation, or we want to change it in flight
-        // Set<IEmployee> uniqueEmployees = new TreeSet<>((o1, o2) -> ...comparator code here...);
         while(peopleMatcher.find()) {
             String row = peopleMatcher.group();
-            // Composition example
-            createCompositionExample(row);
             IEmployee employee =  Employee.createEmployee(peopleMatcher.group());
             double salary = employee.getSalary();
             // Adding an object to a collections (only Objects are allowed for collections)
@@ -62,49 +57,46 @@ public class Main {
             workers.add(employee);
             uniqueEmployees.add(employee);
             totalSalary += salary;
-            // Example of instanceof, getClass
-            // showEmployeeDetails(employee);
         }
 
         printTotalSalary(totalSalary);
 
-        // We can access by indexes
-        IEmployee third = employees.get(2);
-        System.out.println(employees.indexOf(third)); // 2 - will return an index of the element
+        // Set doesn't contain duplicates, but order is not predictable
+        for(IEmployee uniqueEmployee : uniqueEmployees) {
+            System.out.println(uniqueEmployee.toString());
+        }
+    }
 
-        // For sets:
-        List<IEmployee> tempEmps = new ArrayList<>(uniqueEmployees); // first convert to an array (expensive operation)
-        IEmployee fourth = tempEmps.get(3);
-        System.out.println(fourth);
+    // Business logic
+    public int getSalary(String firstName) {
+        for (IEmployee employee : uniqueEmployees) {
+            Employee emp = (Employee) employee;
 
-        IEmployee customEmployee = Employee.createEmployee("Anna, Doe, 11/02/1976, Manager, {orgSize=300,dr=10}");
-        // To make it work we need to Override equals method on Employee class to "teach" it how to compare instances
-        // Otherwise it will use default method and compare memory locations for 2 objects
-        System.out.println(employees.contains(customEmployee));
+            if (firstName.equals(emp.firstName)) {
+                return emp.getSalary();
+            }
+        }
 
-        // Convert collection to array with predefined custom type
-        IEmployee[] employeesArray = employees.toArray(new IEmployee[0]);
+        return 0;
+    }
 
-        // Adding multiple values to the List
-        // List created with List.of is unmodified
-        List<String> removalNames = new ArrayList<>(List.of("Doe", "Lids", "Aaron"));
-        removalNames.sort(Comparator.naturalOrder());
-        System.out.println(removalNames);
-        removeUndesirable(employees, removalNames);
+    private static void printTotalSalary(double totalSalary) {
+        NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.US);
+        System.out.printf("Total salary is %s%n", currencyInstance.format(totalSalary));
+    }
 
-        // Adding one collection to another one
-        List<String> newList = new ArrayList<>();
-        newList.addAll(removalNames);
-        // The same with the constructor
-        List<String> secondList = new ArrayList<>(removalNames);
-        newList.set(0, "Replaced");
-        // To get a subset
-        newList.subList(0, 2);
-        System.out.println(newList.size());
-        // We can clear the whole collection
-        secondList.clear();
-        System.out.println(secondList.isEmpty()); // check if collection is empty
+    // Collections - methods and usage examples
+    // Looping
+    private static void loopingThroughCollection() {
+        // Looping through the collection - enhanced loop
+        for (IEmployee employee : employees) {
+            System.out.println(employee.toString());
+        }
+    }
 
+    // Sorting
+    // First option
+    private static void sortingCollectionWithClass() {
         // Let's print all employees in alphabetical order
         // We use anonymous class (as we use it only here)
         // Sort do not return new collection, but modify original
@@ -122,7 +114,10 @@ public class Main {
                 return 0;
             }
         });
+    }
 
+    // Second option
+    private static void sortingCollectionWithLambda() {
         // The second option is to use lambda
         employees.sort((o1, o2) -> {
             if (o1 instanceof  Employee emp1 && o2  instanceof Employee emp2) {
@@ -132,7 +127,10 @@ public class Main {
             }
             return 0;
         });
+    }
 
+    // Third option
+    private static void sortingCollectionWithUtilityClass() {
         // The third option is Collections (utility) class
         Collections.sort(employees, (o1, o2) -> {
             if (o1 instanceof  Employee emp1 && o2  instanceof Employee emp2) {
@@ -142,39 +140,90 @@ public class Main {
             }
             return 0;
         });
+    }
 
+    // Fourth option
+    // Note - class should implement Comparable!
+    private static void sortingCollectionWithBuiltInComparatorAndComparable() {
         // The fourth option - to implement Comparable on the class and use built-in Comparators
         Collections.sort(employees, Comparator.naturalOrder());
+    }
 
-        // Looping through the collection - enhanced loop
-        for (IEmployee employee : employees) {
-            System.out.println(employee.toString());
+    // Modifying and accessing elements
+    private static void modifyingElementsInTheCollection() {
+        // Adding multiple values to the List
+        // List created with List.of is unmodified
+        List<String> removalNames = new ArrayList<>(List.of("Doe", "Lids", "Aaron"));
+        removalNames.sort(Comparator.naturalOrder());
+        removeUndesirable(employees, removalNames);
+
+        // Adding one collection to another one
+        List<String> newList = new ArrayList<>();
+        newList.addAll(removalNames);
+        // The same with the constructor
+        List<String> secondList = new ArrayList<>(removalNames);
+        newList.set(0, "Replaced");
+        // To get a subset
+        newList.subList(0, 2);
+        System.out.println(newList.size());
+        // We can clear the whole collection
+        secondList.clear();
+        System.out.println(secondList.isEmpty()); // check if collection is empty
+    }
+
+    private static void removeUndesirable(List<IEmployee> employees, List<String> removalNames) {
+        // Looping with iterators
+        // if you need to remove elements during the iteration - enhanced loop throws an error
+        for (Iterator<IEmployee> it = employees.iterator(); it.hasNext(); ) {
+            IEmployee employee = it.next();
+            if (employee instanceof Employee empl) {
+                // We need to cast as IEmployee doesn't have getters
+                if (removalNames.contains(empl.getLastName())) {
+                    it.remove();
+                }
+            }
         }
+    }
 
-        System.out.println("-----------------");
-        // Set doesn't contain duplicates, but order is not predictable
-        for(IEmployee uniqueEmployee : uniqueEmployees) {
-            System.out.println(uniqueEmployee.toString());
-        }
+    private static void convertCollectionToArrayExample() {
+        // Convert collection to array with predefined custom type
+        IEmployee[] employeesArray = employees.toArray(new IEmployee[0]);
+    }
 
+    private static void ifElementIsInCollectionExample() {
+        IEmployee customEmployee = Employee.createEmployee("Anna, Doe, 11/02/1976, Manager, {orgSize=300,dr=10}");
+        // To make it work we need to Override equals method on Employee class to "teach" it how to compare instances
+        // Otherwise it will use default method and compare memory locations for 2 objects
+        System.out.println(employees.contains(customEmployee));
+    }
+
+    private static void accessToElementsInCollection() {
+        // We can access by indexes
+        IEmployee third = employees.get(2);
+        System.out.println(employees.indexOf(third)); // 2 - will return an index of the element
+    }
+
+
+    // Sets
+    private static void accessToElementsInSet() {
+        // For sets:
+        List<IEmployee> tempEmps = new ArrayList<>(uniqueEmployees); // first convert to an array (expensive operation)
+        IEmployee fourth = tempEmps.get(3);
+        System.out.println(fourth);
+    }
+
+    // Record example
+    private static void recordUsageExample() {
         RecordExample myRecord = new RecordExample("John", "Doe", LocalDate.of(1900, 8, 12));
 
         System.out.println(myRecord.firstName());
-
-//        Developer newDev = new Developer("");
-//
-//        System.out.println(newDev.getAmountOfInterviews());
     }
 
-    private static void printTotalSalary(double totalSalary) {
-        NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.US);
-        System.out.printf("Total salary is %s%n", currencyInstance.format(totalSalary));
-    }
-
+    // Composition usage example
     private static void createCompositionExample(String row) {
         // Example of using composition
         Flyer flyer = new Manager(row);
-        // flyer.fly();
+        flyer.fly();
     }
 
     // Example of instanceof, getClass
@@ -193,31 +242,5 @@ public class Main {
             // With more modern (16+) variation of instanceof we can cast it immediately to a variable
             System.out.println(analyst.getBaseAmountOfProjects());
         }
-    }
-
-    private static void removeUndesirable(List<IEmployee> employees, List<String> removalNames) {
-        // Looping with iterators
-        // if you need to remove elements during the iteration - enhanced loop throws an error
-        for (Iterator<IEmployee> it = employees.iterator(); it.hasNext(); ) {
-            IEmployee employee = it.next();
-            if (employee instanceof Employee empl) {
-                // We need to cast as IEmployee doesn't have getters
-                if (removalNames.contains(empl.getLastName())) {
-                    it.remove();
-                }
-            }
-        }
-    }
-
-    public int getSalary(String firstName) {
-        for (IEmployee employee : uniqueEmployees) {
-           Employee emp = (Employee) employee;
-
-           if (firstName.equals(emp.firstName)) {
-               return emp.getSalary();
-           }
-        }
-
-        return 0;
     }
 }
