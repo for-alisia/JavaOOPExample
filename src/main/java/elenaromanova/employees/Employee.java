@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public abstract class Employee implements IEmployee {
     protected String role = "Employee";
     protected final NumberFormat moneyFormat = NumberFormat.getCurrencyInstance(Locale.US);
-    public final static String PEOPLE_REG_EXP = "(?<firstName>\\w+),\\s*(?<lastName>\\w+),\\s*(?<birthdate>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})?\\n";
+    public final static String PEOPLE_REG_EXP = "(?<firstName>\\w+),\\s*(?<lastName>\\w+),\\s*(?<birthdate>\\d{1,2}/\\d{1,2}/\\d{4}),\\s*(?<role>\\w+)(?:,\\s*\\{(?<details>.*)\\})";
     public final static Pattern PATTERN = Pattern.compile(PEOPLE_REG_EXP);
     protected Matcher peopleMatcher;
     protected String lastName;
@@ -68,6 +68,7 @@ public abstract class Employee implements IEmployee {
 
     // Factory
     public static IEmployee createEmployee(String empText) {
+        System.out.println(empText);
         Matcher peopleMatcher = Employee.PATTERN.matcher(empText);
         if (peopleMatcher.matches()) {
             return switch(peopleMatcher.group("role")) {
