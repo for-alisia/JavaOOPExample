@@ -27,10 +27,16 @@ public class StreamsExample {
                 Andrea, Black, 30/03/1987, Developer, {locpd=1600,yoe=7,iq=100}
                 """;
         // .lines() - creates a stream of strings
-        people
+        int totalSalary = people
             .lines()
             .map(Employee::createEmployee) //.map(s -> Employee.createEmployee(s))
-            .forEach(System.out::println); // .forEach((s) -> System.out.println(s))
+            .mapToInt(e -> {
+                System.out.println(e);
+
+                return e.getSalary();
+            })
+            .sum();
+        System.out.println(totalSalary);
     }
 
     private void createStreamFromFile() {

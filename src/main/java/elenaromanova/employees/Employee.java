@@ -68,7 +68,6 @@ public abstract class Employee implements IEmployee {
 
     // Factory
     public static IEmployee createEmployee(String empText) {
-        System.out.println(empText);
         Matcher peopleMatcher = Employee.PATTERN.matcher(empText);
         if (peopleMatcher.matches()) {
             return switch(peopleMatcher.group("role")) {
