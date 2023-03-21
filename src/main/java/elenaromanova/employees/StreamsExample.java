@@ -5,7 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -23,20 +25,30 @@ public class StreamsExample {
                 Max, Jonas, 10/01/1987, Developer, {locpd=2000,yoe=10,iq=140}
                 Lisa, Doll, 22/02/1987, Developer, {locpd=1300,yoe=3,iq=105}
                 Andrea, Black, 30/03/1987, Developer, {locpd=1600,yoe=7,iq=100}
-                Andrea, Black, 30/03/1987, Developer, {locpd=1600,yoe=7,iq=100}
-                Andrea, Black, 30/03/1987, Developer, {locpd=1600,yoe=7,iq=100}
+                Andrea, Hack, 30/03/1987, Developer, {locpd=1600,yoe=7,iq=100}
+                Andrea, Black, 30/03/1987, Developer, {locpd=1500,yoe=5,iq=85}
                 """;
         // .lines() - creates a stream of strings
         int totalSalary = people
             .lines()
             .map(Employee::createEmployee) //.map(s -> Employee.createEmployee(s))
-            .mapToInt(e -> {
-                System.out.println(e);
-
-                return e.getSalary();
-            })
+            .sorted() // natural order -> relays on implementation os compareTo (comparable interface)
+            .sorted(Comparator.comparingInt(IEmployee::getSalary)) // custom Comparator
+            .map(e ->(Employee) e) // To get access to firstName we need to cast IEmployee to Employee
+            .sorted(Comparator // another way to sort by firstName+ lastName + salary
+                .comparing(Employee::getFirstName) // we can use multiple comparing one by one
+                .thenComparing(Employee::getLastName)
+                .thenComparingInt(Employee::getSalary)
+                .reversed()) // Reverse the order
+            .mapToInt(StreamsExample::getEmpSalaryAndPrint)
             .sum();
         System.out.println(totalSalary);
+    }
+
+    private static int getEmpSalaryAndPrint(IEmployee emp) {
+        System.out.println(emp);
+
+        return emp.getSalary();
     }
 
     private void createStreamFromFile() {

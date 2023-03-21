@@ -97,6 +97,8 @@ public abstract class Employee implements IEmployee {
         };
     }
 
+
+
     @Override
     public abstract int getSalary();
 
