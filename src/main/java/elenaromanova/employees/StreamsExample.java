@@ -59,6 +59,19 @@ public class StreamsExample {
         return emp.getSalary();
     }
 
+    private static void alternativeFilters(String people) {
+        Predicate<String> stringPredicate = s -> s.contains("Smith");
+        Predicate<IEmployee> iEmployeePredicate = e -> e instanceof Developer;
+        Predicate<IEmployee> salaryPredicate = e -> e.getSalary() > 5000;
+        people
+            .lines()
+            .filter(s -> !s.contains("Analyst"))
+            .filter(stringPredicate.negate()) // with extra variable
+            .map(Employee::createEmployee)
+            .filter(iEmployeePredicate.negate().and(salaryPredicate)) // combining conditions
+            .map(e ->(Employee) e);
+    }
+
     private void createStreamFromFile() {
         // Reading data from file
         try {
