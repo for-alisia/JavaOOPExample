@@ -7,7 +7,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -40,6 +42,12 @@ public class StreamsExample {
                 .thenComparing(Employee::getLastName)
                 .thenComparingInt(Employee::getSalary)
                 .reversed()) // Reverse the order
+            .distinct() // to remove duplicates
+            // .collect(Collectors.toSet()) - allows to put data in a Set (also to a List and other collections),
+            // .stream() - if we need to continue a pipe after collect (collect returns a collection)
+            .filter(Predicate.not((e) -> e.lastName.equals("Doe")))
+            .filter(e -> e instanceof Developer)
+            .filter(e -> e.getSalary() > 4500)
             .mapToInt(StreamsExample::getEmpSalaryAndPrint)
             .sum();
         System.out.println(totalSalary);
