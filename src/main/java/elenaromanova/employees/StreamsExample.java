@@ -51,6 +51,8 @@ public class StreamsExample {
             .mapToInt(StreamsExample::getEmpSalaryAndPrint)
             .sum();
         System.out.println(totalSalary);
+
+        flatteringStreams(people);
     }
 
     private static int getEmpSalaryAndPrint(IEmployee emp) {
@@ -70,6 +72,20 @@ public class StreamsExample {
             .map(Employee::createEmployee)
             .filter(iEmployeePredicate.negate().and(salaryPredicate)) // combining conditions
             .map(e ->(Employee) e);
+    }
+
+    private static void flatteringStreams(String people) {
+        people
+            .lines()
+            .map(Employee::createEmployee)
+            .map((e) -> (Employee) e)
+            .map(Employee::getFirstName)
+            .map(String::toLowerCase)
+            .map(e -> e.split(""))
+            .flatMap(Arrays::stream) // from stream of streams -> one combined stream
+            .distinct()
+            .sorted()
+            .forEach(System.out::println);
     }
 
     private void createStreamFromFile() {
