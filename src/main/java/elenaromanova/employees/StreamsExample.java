@@ -3,13 +3,8 @@ package elenaromanova.employees;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -72,6 +67,32 @@ public class StreamsExample {
             .map(Employee::createEmployee)
             .filter(iEmployeePredicate.negate().and(salaryPredicate)) // combining conditions
             .map(e ->(Employee) e);
+    }
+
+    private static void matchersExample(String people) {
+        boolean allGetsBigSalary = people
+                                .lines()
+                                .map(Employee::createEmployee)
+                                .allMatch(e -> e.getSalary() > 3000); // allMatch is last operation, returns boolean
+
+        // short circuit (stops on first match) - any and none as well
+        boolean anyGetsBigSalary = people
+                                .lines()
+                                .map(Employee::createEmployee)
+                                .anyMatch(e -> e.getSalary() > 3000); // boolean, last operation
+
+        boolean noneGetsBigSalary = people
+                                .lines()
+                                .map(Employee::createEmployee)
+                                .noneMatch(e -> e.getSalary() > 3000);
+
+        System.out.println(allGetsBigSalary);
+        Optional<IEmployee> first = people
+                                    .lines()
+                                    .map(Employee::createEmployee)
+                                    .findFirst(); // can be findAny - no order in this case
+        System.out.println(first.map(IEmployee::getSalary).orElse(0)); // how to extract data from Optional
+
     }
 
     private static void flatteringStreams(String people) {
