@@ -44,7 +44,7 @@ public class StreamsExample {
             .filter(e -> e instanceof Developer)
             .filter(e -> e.getSalary() > 4500)
             .mapToInt(StreamsExample::getEmpSalaryAndPrint)
-            .sum();
+            .sum(); // average(),
         System.out.println(totalSalary);
 
         flatteringStreams(people);
@@ -54,6 +54,30 @@ public class StreamsExample {
         System.out.println(emp);
 
         return emp.getSalary();
+    }
+
+    static void reducersExamples(String people) {
+        IntStream empSalary = people.lines()
+                .map(Employee::createEmployee)
+                .mapToInt(IEmployee::getSalary);
+
+        OptionalDouble averSalary = empSalary.average();
+        // OptionalInt maxSal = empSalary.max();
+        // Long totlCount = empSalary.count();
+        // Classic reduce for sum
+        // long sum = empSalary.reduce(0, (a, b) -> a + b);
+        // Classic reduce for max
+        // int maxSal = empSalary.reduce(0, Math::max);
+        // reduce(() -> {}) - will return Optional ach time (as accumulator is not provided)
+
+        // Safe work with doubles
+        System.out.println(averSalary.orElse(0));
+
+        // With strings
+        // If we have 1 item in a stream, it will be returned without being processed
+        Optional<String> longStr = Stream.of("Tom", "Ann", "Sam")
+                .reduce((a, b) -> a.concat("_").concat(b));
+        System.out.println(longStr.orElse("N/A"));
     }
 
     private static void alternativeFilters(String people) {
