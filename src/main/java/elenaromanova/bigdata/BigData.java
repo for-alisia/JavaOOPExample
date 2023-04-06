@@ -3,10 +3,8 @@ package elenaromanova.bigdata;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.LongSummaryStatistics;
-import java.util.Map;
-import java.util.TreeMap;
+import java.text.NumberFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BigData {
@@ -15,8 +13,9 @@ public class BigData {
     public static String path = "/Users/alisia/Projects/JavaProjects/basicJava/examplesOOP/Hr5m.csv";
     public static void main(String[] args) throws IOException {
         long startTime = System.currentTimeMillis();
-        exampleWithRecord();
+        // exampleWithRecord();
         // exampleWithStrings();
+        anotherGroupExample();
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
     }
@@ -45,7 +44,30 @@ public class BigData {
                     .skip(1)
                     .map(s -> s.split(","))
                     .map(a -> new Person(a[2], a[4], Long.parseLong(a[25]), a[32]))
-                    .collect(Collectors.groupingBy(Person::state, TreeMap::new, Collectors.toList()));
+                    .collect(Collectors.groupingBy(
+                            Person::state,
+                            TreeMap::new,
+                            Collectors.toList()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void anotherGroupExample() {
+        try {
+            Files
+                    .lines(Path.of(path))
+                    .skip(1)
+                    .map(s -> s.split(","))
+                    .map(a -> new Person(a[2], a[4], Long.parseLong(a[25]), a[32]))
+                    .collect(Collectors.groupingBy(
+                            Person::state,
+                            TreeMap::new,
+                            Collectors.collectingAndThen(
+                                    Collectors.summingLong(Person::salary),
+                                    NumberFormat.getCurrencyInstance(Locale.US)::format
+                    )))
+                    .forEach((state, salary) -> System.out.printf("%s -> %s%n", state, salary));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
