@@ -21,7 +21,8 @@ public class BigData {
         // anotherGroupExample();
         // nestedGroupExample();
         // reducingExample();
-        partitioningExample();
+        // partitioningExample();
+        otherCollectionsMethodExample();
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
     }
@@ -116,6 +117,25 @@ public class BigData {
                         Collectors.groupingBy(Person::state, Collectors.counting())
                     ))
                     .forEach((state, salary) -> System.out.printf("%s -> %s%n", state, salary));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void otherCollectionsMethodExample() {
+        try {
+            Map<String, Long> result = Files
+                .lines(Path.of(path))
+                .skip(1)
+                .map(s -> s.split(","))
+                .map(a -> new Person(a[2], a[4], Long.parseLong(a[25]), a[32], a[5].charAt(0)))
+                .collect(Collectors.groupingBy(
+                    Person::state,
+                    Collectors.counting()
+                ));
+            result.replaceAll((k, v) -> v * 2); // increase coun 2 times
+            result.compute("CA", (k, v) -> v * 10); // will provide lambda for specific key
+            result.merge("CA", 1L, (x, y) -> x + y); // if not exist, provide 1L, otherwise lambda will be applied
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
