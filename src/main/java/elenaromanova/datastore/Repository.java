@@ -2,6 +2,7 @@ package elenaromanova.datastore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class Repository<T extends Repository.IDable<V> & Repository.Savable, V> {
@@ -23,8 +24,9 @@ public class Repository<T extends Repository.IDable<V> & Repository.Savable, V> 
         return record;
     }
 
-    T findById(long id) {
-        return records.stream().filter(p -> p.id().equals(id)).findFirst().orElseThrow();
+    Optional<T> findById(long id) {
+
+        return records.stream().filter(p -> p.id().equals(id)).findFirst();
     }
 
     static <T,V>V encrypt(T input, Function<T, V> func) {  // static method that gets 2 generics and lambda
@@ -46,7 +48,7 @@ public class Repository<T extends Repository.IDable<V> & Repository.Savable, V> 
 
         System.out.println(pRepo.findAll());
 
-        Person foundPerson = pRepo.findById(20L);
+        Person foundPerson = pRepo.findById(20L).get();
 
         System.out.println(foundPerson);
 
