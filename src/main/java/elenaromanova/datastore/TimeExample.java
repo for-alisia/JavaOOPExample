@@ -29,5 +29,23 @@ public class TimeExample {
         System.out.println(ldt1.getMonth());
 
         System.out.println(Instant.now()); // IPAC time (seconds from 1.1.1970)
+
+        // Calculating difference between dates and time
+        Period diff = Period.between(newYear, now);
+        System.out.printf("%d months, %d days %n", diff.getMonths(), diff.getDays());
+
+        LocalTime ltd2 = LocalTime.of(14, 25);
+        Duration timeDiff = Duration.between(ltd2, ldt1);
+        System.out.printf("%d hours, %d minutes %n", timeDiff.toHours(), timeDiff.toMinutes());
+
+        // Time Zones
+        ZonedDateTime zn1 = ZonedDateTime.of(ldt1, ZoneId.of("+1"));
+        System.out.println(zn1);
+
+        // User time zone - GMT - 6;
+        LocalDateTime dateFromUser = LocalDateTime.of(2023, 01, 25, 18, 37);
+        ZonedDateTime zd = ZonedDateTime.of(dateFromUser, ZoneId.of("-6"));
+        ZonedDateTime zd2 = zd.withZoneSameInstant(ZoneId.of("+0"));
+        System.out.println(zd2);
     }
 }
