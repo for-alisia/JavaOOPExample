@@ -2,6 +2,8 @@ package elenaromanova.datastore;
 
 import java.time.*;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,5 +49,8 @@ public class TimeExample {
         ZonedDateTime zd = ZonedDateTime.of(dateFromUser, ZoneId.of("-6"));
         ZonedDateTime zd2 = zd.withZoneSameInstant(ZoneId.of("+0"));
         System.out.println(zd2);
+
+        System.out.println(dateFromUser.with(TemporalAdjusters.next(DayOfWeek.FRIDAY))); // will return local day next friday
+        System.out.println(dateFromUser.withMonth(3)); // creating a clone of date with another month
     }
 }

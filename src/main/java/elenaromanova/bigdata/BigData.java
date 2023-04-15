@@ -5,11 +5,35 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class BigData {
-    record Person(String firstName, String lastName, long salary, String state, char gender) {}
+
+    private static final DateTimeFormatter dobFormatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+    private static final DateTimeFormatter tobFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+
+    record Person(
+            String firstName,
+            String lastName,
+            long salary,
+            String state,
+            char gender,
+            LocalDate dob,
+            LocalTime tob
+    ) {
+        long getAge() {
+          return Period.between(dob, LocalDate.now()).getYears();
+        }
+
+        String getDobAsText() {
+            return dobFormatter.format(dob);
+        }
+    }
 
     record Person1(String firstName, String lastName, BigDecimal salary, String state, char gender) {}
 
@@ -22,9 +46,38 @@ public class BigData {
         // nestedGroupExample();
         // reducingExample();
         // partitioningExample();
-        otherCollectionsMethodExample();
+        // otherCollectionsMethodExample();
+        exampleWithDates();
         long endTime = System.currentTimeMillis();
         System.out.println(endTime - startTime);
+    }
+
+    public static void exampleWithDates() {
+        try {
+            Files
+                .lines(Path.of(path))
+                .limit(50)
+                .skip(1)
+                .map(s -> s.split(","))
+                .map(a -> getPerson(a))
+                .filter(p -> p.getAge() > 50)
+                .forEach(p -> System.out.printf("%s %s, %s years old %n", p.firstName, p.lastName, p.getAge()));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Person getPerson(String[] a) {
+        return new Person(
+            a[2],
+            a[4],
+            Long.parseLong(a[25]),
+            a[32],
+            a[5].charAt(0),
+            LocalDate.parse(a[10], dobFormatter),
+            LocalTime.parse(a[11], tobFormatter)
+        );
     }
 
     public static void exampleWithRecord() {
@@ -34,7 +87,7 @@ public class BigData {
                 .parallel() // to make stream faster - with this it takes approx 5 sec
                 .skip(1)
                 .map(s -> s.split(","))
-                .map(a -> new Person(a[2], a[4], Long.parseLong(a[25]), a[32], a[5].charAt(0)))
+                .map(a -> getPerson(a))
                 .collect(Collectors.summingLong(Person::salary));
 
             System.out.println(result);
@@ -46,15 +99,15 @@ public class BigData {
     public static void groupingExample() {
         try {
             Map<String, List<Person>> groupByState = Files
-                    .lines(Path.of(path))
-                    .parallel() // to make stream faster - with this it takes approx 5 sec
-                    .skip(1)
-                    .map(s -> s.split(","))
-                    .map(a -> new Person(a[2], a[4], Long.parseLong(a[25]), a[32], a[5].charAt(0)))
-                    .collect(Collectors.groupingBy(
-                            Person::state,
-                            TreeMap::new,
-                            Collectors.toList()));
+                .lines(Path.of(path))
+                .parallel() // to make stream faster - with this it takes approx 5 sec
+                .skip(1)
+                .map(s -> s.split(","))
+                .map(a -> getPerson(a))
+                .collect(Collectors.groupingBy(
+                    Person::state,
+                    TreeMap::new,
+                    Collectors.toList()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,18 +116,18 @@ public class BigData {
     public static void anotherGroupExample() {
         try {
             Files
-                    .lines(Path.of(path))
-                    .skip(1)
-                    .map(s -> s.split(","))
-                    .map(a -> new Person(a[2], a[4], Long.parseLong(a[25]), a[32], a[5].charAt(0)))
-                    .collect(Collectors.groupingBy(
-                            Person::state,
-                            TreeMap::new,
-                            Collectors.collectingAndThen(
-                                    Collectors.summingLong(Person::salary),
-                                    NumberFormat.getCurrencyInstance(Locale.US)::format
-                    )))
-                    .forEach((state, salary) -> System.out.printf("%s -> %s%n", state, salary));
+                .lines(Path.of(path))
+                .skip(1)
+                .map(s -> s.split(","))
+                .map(a -> getPerson(a))
+                .collect(Collectors.groupingBy(
+                    Person::state,
+                    TreeMap::new,
+                    Collectors.collectingAndThen(
+                        Collectors.summingLong(Person::salary),
+                        NumberFormat.getCurrencyInstance(Locale.US)::format
+                )))
+                .forEach((state, salary) -> System.out.printf("%s -> %s%n", state, salary));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -86,7 +139,7 @@ public class BigData {
             .lines(Path.of(path))
             .skip(1)
             .map(s -> s.split(","))
-            .map(a -> new Person(a[2], a[4], Long.parseLong(a[25]), a[32], a[5].charAt(0)))
+            .map(a -> getPerson(a))
             .collect(Collectors.groupingBy(
                 Person::state,
                 TreeMap::new,
@@ -108,15 +161,15 @@ public class BigData {
     public static void partitioningExample() {
         try {
             Files
-                    .lines(Path.of(path))
-                    .skip(1)
-                    .map(s -> s.split(","))
-                    .map(a -> new Person(a[2], a[4], Long.parseLong(a[25]), a[32], a[5].charAt(0)))
-                    .collect(Collectors.partitioningBy(
-                        p -> p.gender == 'F',
-                        Collectors.groupingBy(Person::state, Collectors.counting())
-                    ))
-                    .forEach((state, salary) -> System.out.printf("%s -> %s%n", state, salary));
+                .lines(Path.of(path))
+                .skip(1)
+                .map(s -> s.split(","))
+                .map(a -> getPerson(a))
+                .collect(Collectors.partitioningBy(
+                    p -> p.gender == 'F',
+                    Collectors.groupingBy(Person::state, Collectors.counting())
+                ))
+                .forEach((state, salary) -> System.out.printf("%s -> %s%n", state, salary));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -128,7 +181,7 @@ public class BigData {
                 .lines(Path.of(path))
                 .skip(1)
                 .map(s -> s.split(","))
-                .map(a -> new Person(a[2], a[4], Long.parseLong(a[25]), a[32], a[5].charAt(0)))
+                .map(a -> getPerson(a))
                 .collect(Collectors.groupingBy(
                     Person::state,
                     Collectors.counting()
@@ -165,12 +218,12 @@ public class BigData {
     public static void exampleWithStrings() {
         try {
             long result = Files
-                    .lines(Path.of(path))
-                    .parallel() // to make stream faster - with this it takes approx 5 sec
-                    .skip(1)
-                    .map(s -> s.split(",")[25])
-                    // .collect(Collectors.summingLong(s -> Long.parseLong(s))); // this takes approx. 7 sec
-                    .mapToLong(Long::parseLong).sum(); // this also takes approx 7 sec
+                .lines(Path.of(path))
+                .parallel() // to make stream faster - with this it takes approx 5 sec
+                .skip(1)
+                .map(s -> s.split(",")[25])
+                // .collect(Collectors.summingLong(s -> Long.parseLong(s))); // this takes approx. 7 sec
+                .mapToLong(Long::parseLong).sum(); // this also takes approx 7 sec
             // .count(); // One option to count all items
             // .collect(Collectors.counting()); // Second option to count amount of elements
             System.out.println(result);
